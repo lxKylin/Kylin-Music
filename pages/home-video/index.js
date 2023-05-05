@@ -44,6 +44,9 @@ Page({
       // 判断是否可以请求数据
       if (!this.data.hasMore && offset !== 0) return;
 
+      // 展示加载动画
+      wx.showNavigationBarLoading();
+
       // 请求数据
       const res = await getTopMV(offset);
       let newData = this.data.topMVs;
@@ -57,6 +60,12 @@ Page({
       // 设置数据
       this.setData({ topMVs: newData });
       this.setData({ hasMore: res.hasMore });
+
+      // 关闭加载动画
+      wx.hideNavigationBarLoading();
+      if (offset === 0) {
+        wx.stopPullDownRefresh();
+      }
     } catch (err) {
       console.log(err);
     }
