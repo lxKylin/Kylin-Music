@@ -25,9 +25,38 @@ Page({
   //     });
   // },
   async onLoad(options) {
+    // try {
+    //   const res = await getTopMV(0);
+    //   this.setData({ topMVs: res.data || [] });
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    // 优化
+    this.getTopMVData(0);
+  },
+
+  /**
+   * 封装网络请求的方法
+   */
+  async getTopMVData(offset) {
     try {
-      const res = await getTopMV(0);
-      this.setData({ topMVs: res.data || [] });
+      // 判断是否可以请求数据
+      if (!this.data.hasMore && offset !== 0) return;
+
+      // 请求数据
+      const res = await getTopMV(offset);
+      let newData = this.data.topMVs;
+      // 如果offset为0,那么就是第一次请求，否则进行拼接
+      if (offset === 0) {
+        newData = res.data;
+      } else {
+        newData = newData.concat(res.data);
+      }
+
+      // 设置数据
+      this.setData({ topMVs: newData });
+      this.setData({ hasMore: res.hasMore });
     } catch (err) {
       console.log(err);
     }
@@ -57,29 +86,33 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   async onPullDownRefresh() {
-    try {
-      const res = await getTopMV(0);
-      this.setData({ topMVs: res.data || [] });
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   const res = await getTopMV(0);
+    //   this.setData({ topMVs: res.data || [] });
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    this.getTopMVData(0);
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
   async onReachBottom() {
-    try {
-      if (!this.data.hasMore) return;
-      // 0～9
-      // 10～19
-      const res = await getTopMV(this.data.topMVs.length);
-      // 不能直接赋值，不然会覆盖原来的数据，应该追加
-      this.setData({ topMVs: this.data.topMVs.concat(res.data) });
-      this.setData({ hasMore: res.hasMore });
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   if (!this.data.hasMore) return;
+    //   // 0～9
+    //   // 10～19
+    //   const res = await getTopMV(this.data.topMVs.length);
+    //   // 不能直接赋值，不然会覆盖原来的数据，应该追加
+    //   this.setData({ topMVs: this.data.topMVs.concat(res.data) });
+    //   this.setData({ hasMore: res.hasMore });
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    this.getTopMVData(this.data.topMVs.length);
   },
 
   /**
