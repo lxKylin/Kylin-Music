@@ -72,6 +72,19 @@ Page({
   },
 
   /**
+   * 封装事件处理的方法
+   */
+  handleVideoItemClick(event) {
+    // 获取id
+    const id = event.currentTarget.dataset.item.id;
+
+    // 页面跳转
+    wx.navigateTo({
+      url: `/pages/detail-video/index?id=${id}`,
+    });
+  },
+
+  /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {},
