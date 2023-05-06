@@ -1,2 +1,3 @@
 <!--pages/home-music/index.wxml-->
-<view>Home</view>
+
+<van-search placeholder="请输入搜索喜欢的音乐" />
