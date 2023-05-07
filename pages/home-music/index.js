@@ -1,5 +1,10 @@
 // pages/home-music/index.js
 import { getBanners } from "../../service/api_music";
+import queryRect from "../../utils/query-rect";
+import throttle from "../../utils/throttle";
+
+// 对 queryRect函数 进行节流
+const throttleQueryRect = throttle(queryRect, 1000);
 
 Page({
   /**
@@ -27,11 +32,23 @@ Page({
   // 图片加载完成
   handleSwiperImageLoaded() {
     // 获取图片高度(如何获取组件的高度)
-    const query = wx.createSelectorQuery();
-    query.select(".swiper-image").boundingClientRect();
+    // const query = wx.createSelectorQuery();
+    // query.select(".swiper-image").boundingClientRect();
 
-    query.selectViewport().scrollOffset();
-    query.exec((res) => {
+    // query.selectViewport().scrollOffset();
+    // query.exec((res) => {
+    //   const rect = res[0];
+    //   this.setData({ swiperHeight: rect.height });
+    // });
+
+    // 优化
+    // queryRect(".swiper-image").then((res) => {
+    //   const rect = res[0];
+    //   this.setData({ swiperHeight: rect.height });
+    // });
+
+    // 节流优化
+    throttleQueryRect(".swiper-image").then((res) => {
       const rect = res[0];
       this.setData({ swiperHeight: rect.height });
     });
