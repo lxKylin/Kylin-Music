@@ -9,3 +9,9 @@
     </swiper-item>
   </block>
 </swiper>
+<!-- 3、推荐歌曲 -->
+<view class="recommend-song">
+  <area-header title="推荐歌曲">
+    <text>阿清</text>
+  </area-header>
+</view>
