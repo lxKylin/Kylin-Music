@@ -5,3 +5,9 @@ export function getBanners() {
     type: 2,
   });
 }
+
+export function getRankings(id) {
+  return lxRequest.get("/playlist/detail", {
+    id,
+  });
+}

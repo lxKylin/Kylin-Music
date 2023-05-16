@@ -12,6 +12,10 @@
 <!-- 3、推荐歌曲 -->
 <view class="recommend-song">
   <area-header title="推荐歌曲">
-    <text>阿清</text>
   </area-header>
+  <view class="song-list">
+    <block wx:for="{{recommendSongs}}" wx:key="id">
+      <song-item-v1 item="{{item}}" bindtap="handleSongItemClick" data-index="{{index}}"></song-item-v1>
+    </block>
+  </view>
 </view>

@@ -1,4 +1,6 @@
 // pages/home-music/index.js
+import { rankingStore } from "../../store/index";
+
 import { getBanners } from "../../service/api_music";
 import queryRect from "../../utils/query-rect";
 import throttle from "../../utils/throttle";
@@ -13,13 +15,26 @@ Page({
   data: {
     banners: [],
     swiperHeight: 0,
+
+    recommendSongs: [],
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 获取页面数据
     this.getPagedata();
+
+    // 发起共享数据
+    rankingStore.dispatch("getRankingdataAction");
+
+    // 从store中获取共享的数据
+    rankingStore.onState("hotRanking", (res) => {
+      if (!res.tracks) return;
+      const recommendSongs = res.tracks.slice(0, 6);
+      this.setData({ recommendSongs });
+    });
   },
 
   // 事件处理
