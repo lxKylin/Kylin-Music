@@ -1,7 +1,7 @@
 // pages/home-music/index.js
 import { rankingStore } from "../../store/index";
 
-import { getBanners } from "../../service/api_music";
+import { getBanners, getSongMenu } from "../../service/api_music";
 import queryRect from "../../utils/query-rect";
 import throttle from "../../utils/throttle";
 
@@ -17,6 +17,9 @@ Page({
     swiperHeight: 0,
 
     recommendSongs: [],
+
+    hotSongMenu: [],
+    recomendSongMenu: [],
   },
 
   /**
@@ -73,6 +76,14 @@ Page({
   getPagedata() {
     getBanners().then((res) => {
       this.setData({ banners: res.banners });
+    });
+
+    getSongMenu().then((res) => {
+      this.setData({ hotSongMenu: res.playlists });
+    });
+
+    getSongMenu("华语").then((res) => {
+      this.setData({ recommendSongMenu: res.playlists });
     });
   },
 
