@@ -20,6 +20,8 @@ Page({
 
     hotSongMenu: [],
     recomendSongMenu: [],
+
+    rankings: { newRanking: {}, originRanking: {}, upRanking: {} },
   },
 
   /**
@@ -33,11 +35,12 @@ Page({
     rankingStore.dispatch("getRankingdataAction");
 
     // 从store中获取共享的数据
-    rankingStore.onState("hotRanking", (res) => {
-      if (!res.tracks) return;
-      const recommendSongs = res.tracks.slice(0, 6);
-      this.setData({ recommendSongs });
-    });
+    // rankingStore.onState("hotRanking", (res) => {
+    //   if (!res.tracks) return;
+    //   const recommendSongs = res.tracks.slice(0, 6);
+    //   this.setData({ recommendSongs });
+    // });
+    this.setupPlayerStoreListener();
   },
 
   // 事件处理
@@ -91,4 +94,46 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {},
+
+  setupPlayerStoreListener() {
+    // 1.排行榜监听
+    rankingStore.onState("hotRanking", (res) => {
+      if (!res.tracks) return;
+      const recommendSongs = res.tracks.slice(0, 6);
+      this.setData({ recommendSongs });
+    });
+    rankingStore.onState("newRanking", this.getRankingHandler("newRanking"));
+    rankingStore.onState(
+      "originRanking",
+      this.getRankingHandler("originRanking")
+    );
+    rankingStore.onState("upRanking", this.getRankingHandler("upRanking"));
+
+    // 2.播放器监听
+    // playerStore.onStates(["currentSong", "isPlaying"], ({currentSong, isPlaying}) => {
+    //   if (currentSong) this.setData({ currentSong })
+    //   if (isPlaying !== undefined) {
+    //     this.setData({
+    //       isPlaying,
+    //       playAnimState: isPlaying ? "running": "paused"
+    //     })
+    //   }
+    // })
+  },
+
+  getRankingHandler(id) {
+    return (res) => {
+      if (Object.keys(res).length === 0) return;
+      const name = res.name;
+      const coverImgUrl = res.coverImgUrl;
+      const playCount = res.playCount;
+      // 拿到前3条数据
+      const songList = res.tracks.slice(0, 3);
+      const rankingObj = { name, coverImgUrl, playCount, songList };
+      const newRankings = { ...this.data.rankings, [id]: rankingObj };
+      this.setData({
+        rankings: newRankings,
+      });
+    };
+  },
 });
