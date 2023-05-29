@@ -37,4 +37,4 @@ const rankingStore = new HYEventStore({
   },
 });
 
-export { rankingStore, rankingMap };
+export { rankingStore };

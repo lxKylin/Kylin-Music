@@ -5,7 +5,8 @@
     <view class="slot">
       <slot></slot>
     </view>
-    <view class="default" wx:if="{{isShoeMore}}">
+    <!-- 更多的点击事件不能在组件内部监听，应该emit到上层使用的组件 -->
+    <view class="default" wx:if="{{isShoeMore}}" bindtap="handleRightClick">
       <text>{{rightText}}</text>
       <image class="icon" src="/assets/images/icons/arrow-right.png"></image>
     </view>

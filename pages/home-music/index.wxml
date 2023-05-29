@@ -11,7 +11,8 @@
 </swiper>
 <!-- 3、推荐歌曲 -->
 <view class="recommend-song" wx:if="{{recommendSongs.length > 0}}">
-  <area-header title="推荐歌曲">
+  <!-- bind:click监听传出的click事件 -->
+  <area-header title="推荐歌曲" bind:click="handleMoreClick">
   </area-header>
   <view class="song-list">
     <block wx:for="{{recommendSongs}}" wx:key="id">
@@ -28,7 +29,7 @@
   <view class="ranking-list">
     <!-- 遍历Object，item是value，而index是key -->
     <block wx:for="{{rankings}}" wx:key="name">
-      <ranking-area-item item="{{item}}" bindtap="handleRankingItemClick" data-idx="{{index}}">
+      <ranking-area-item item="{{item}}" bindtap="handleRankingItemClick" data-rankingName="{{index}}">
       </ranking-area-item>
     </block>
   </view>

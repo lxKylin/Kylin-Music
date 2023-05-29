@@ -26,5 +26,11 @@ Component({
   /**
    * 组件的方法列表
    */
-  methods: {},
+  methods: {
+    handleRightClick() {
+      // 将点击事件发送出去
+      // click是可自定义的，也还可以传出其他数据
+      this.triggerEvent("click");
+    },
+  },
 });

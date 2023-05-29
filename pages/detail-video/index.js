@@ -42,7 +42,7 @@ Page({
 
     // 3.请求相关视频
     getRelatedVideo(id).then((res) => {
-      this.setData({ relatedVideos: res.data });
+      this.setData({ relatedVideo: res.data });
     });
   },
 

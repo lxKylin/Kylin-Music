@@ -49,6 +49,19 @@ Page({
       url: "/pages/detail-search/index",
     });
   },
+  handleMoreClick() {
+    this.navigateToDetailSongsPage("hotRanking");
+  },
+  handleRankingItemClick(event) {
+    const rankingName = event.currentTarget.dataset.rankingName;
+    this.navigateToDetailSongsPage(rankingName);
+  },
+
+  navigateToDetailSongsPage(rankingName) {
+    wx.navigateTo({
+      url: `/pages/detail-songs/index?rankingName=${rankingName}`,
+    });
+  },
 
   // 图片加载完成
   handleSwiperImageLoaded() {
