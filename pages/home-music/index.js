@@ -53,7 +53,7 @@ Page({
     this.navigateToDetailSongsPage("hotRanking");
   },
   handleRankingItemClick(event) {
-    const rankingName = event.currentTarget.dataset.rankingName;
+    const rankingName = event.currentTarget.dataset.ranking;
     this.navigateToDetailSongsPage(rankingName);
   },
 
