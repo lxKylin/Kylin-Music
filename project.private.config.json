@@ -21,6 +21,13 @@
           "query": "id=14621616",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "detail-song-menu",
+          "pathName": "pages/detail-songs/index",
+          "query": "id=447328350&type=menu",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
