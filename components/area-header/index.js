@@ -12,7 +12,7 @@ Component({
       type: String,
       value: "更多",
     },
-    isShoeMore: {
+    isShowMore: {
       type: Boolean,
       value: true,
     },
