@@ -46,11 +46,19 @@ Page({
     // 3.判断关键字为空字符的处理逻辑
     if (!searchValue) {
       this.setData({ suggestSongs: [], resultSongs: [] });
+
+      // 取消请求
+      debounceGetSearchSuggest.cancel();
       return;
     }
     // 4.根据关键字进行搜索
     debounceGetSearchSuggest(searchValue).then((res) => {
       // this.setData({ suggestSongs: res.result.allMatch });
+
+      // 因为存在闭包，不能直接用searchValue
+      // if (!this.data.searchValue.length) {
+      //   return;
+      // }
 
       // 1.获取建议的关键字歌曲
       const suggestSongs = res.result.allMatch;
@@ -70,6 +78,7 @@ Page({
 
   // 回车搜索
   handleSearchAction() {
+    // 历史搜索：保存searchValue到storage中
     const keywords = this.data.searchValue;
     getSearchResult(keywords).then((res) => {
       this.setData({ resultSongs: res.result.songs });

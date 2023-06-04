@@ -18,5 +18,13 @@ Component({
   /**
    * 组件的方法列表
    */
-  methods: {},
+  methods: {
+    handleSongItemClick() {
+      const id = this.properties.item.id;
+      // 1.页面跳转
+      wx.navigateTo({
+        url: `/pages/music-player/index?id=${id}`,
+      });
+    },
+  },
 });

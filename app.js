@@ -2,6 +2,12 @@
 
 // 注册小程序实例
 App({
+  globalData: {
+    screenWidth: 0,
+    screenHeight: 0,
+    statusBarHeight: 0,
+    navBarHeight: 44,
+  },
   // 应用程序启动时
   onLaunch() {
     // 获取设备信息
@@ -9,9 +15,8 @@ App({
     // info中有screenWidth
     this.globalData.screenWidth = info.screenWidth;
     this.globalData.screenHeight = info.screenHeight;
-  },
-  globalData: {
-    screenWidth: 0,
-    screenHeight: 0,
+
+    // 导航栏高度
+    this.globalData.statusBarHeight = info.statusBarHeight;
   },
 });
