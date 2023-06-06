@@ -7,6 +7,7 @@ App({
     screenHeight: 0,
     statusBarHeight: 0,
     navBarHeight: 44,
+    deviceRadio: 0 // 高宽比
   },
   // 应用程序启动时
   onLaunch() {
@@ -18,5 +19,8 @@ App({
 
     // 导航栏高度
     this.globalData.statusBarHeight = info.statusBarHeight;
-  },
+
+    const deviceRadio = info.screenHeight / info.screenWidth;
+    this.globalData.deviceRadio = deviceRadio;
+  }
 });

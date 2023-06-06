@@ -1,4 +1,5 @@
 <!--pages/music-player/index.wxml-->
+<wxs src="/utils/format.wxs" module="format"></wxs>
 
 <!-- 1、背景 -->
 <image class="bg-image" mode="aspectFill" src="{{currentSong.al.picUrl}}"></image>
@@ -32,6 +33,8 @@
     <view class="lyric" wx:if="{{isMusicLyric}}">{{currentLyricText}}</view>
     <!-- 进度 -->
     <view class="progress">
+      <!-- bindchanging：拖拽改变进度条值 -->
+      <!-- bindchange：点击改变进度条值 -->
       <slider class="slider" block-size="{{12}}" value="{{sliderValue}}" bindchanging="handleSliderChanging" bindchange="handleSliderChange">
       </slider>
       <view class="time">
