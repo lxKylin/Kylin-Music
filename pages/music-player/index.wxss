@@ -138,6 +138,7 @@ page {
   overflow: hidden;
 }
 
+/* 去除滚动条 */
 ::-webkit-scrollbar {
   width: 0;
   height: 0;

@@ -22,7 +22,8 @@ Page({
     isMusicLyric: true, // 是否显示歌词
     lyricInfos: [], // 歌词
     currentLyricText: '', // 当前歌词
-    currentLyricIndex: 0 // 当前歌词索引
+    currentLyricIndex: 0, // 当前歌词索引
+    lyricScrollTop: 0 // 需要向上滚动的值
   },
 
   /**
@@ -124,7 +125,8 @@ Page({
           const currentLyricInfo = this.data.lyricInfos[currentIndex];
           this.setData({
             currentLyricText: currentLyricInfo.text,
-            currentLyricIndex: currentIndex
+            currentLyricIndex: currentIndex,
+            lyricScrollTop: currentIndex * 35
           });
         }
       }
