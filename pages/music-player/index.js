@@ -1,9 +1,8 @@
 // pages/music-player/index.js
-import { getSongDetail, getSongLyric } from '../../service/api_player';
+// import { getSongDetail, getSongLyric } from '../../service/api_player';
+// import { parseLyric } from '../../utils/parse-lyric';
 
-import { audioContext } from '../../store/index';
-
-import { parseLyric } from '../../utils/parse-lyric';
+import { audioContext, playerStore } from '../../store/index';
 
 Page({
   /**
@@ -35,7 +34,8 @@ Page({
     this.setData({ id });
 
     // 2、根据id获取歌曲信息
-    this.getPageData(id);
+    // this.getPageData(id);
+    this.setupPlayStoreListener();
 
     // 3、动态计算内容高度
     const globalData = getApp().globalData;
@@ -56,14 +56,14 @@ Page({
 
     // 4、使用audioContext
     // 停止上一个音乐
-    audioContext.stop();
-    /**
-     * audioContext
-     * 1、获取音频流
-     * 2、audioContext对音频流进行解码
-     * 3、播放
-     */
-    audioContext.src = `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
+    // audioContext.stop();
+    // /**
+    //  * audioContext
+    //  * 1、获取音频流
+    //  * 2、audioContext对音频流进行解码
+    //  * 3、播放
+    //  */
+    // audioContext.src = `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
 
     /**
      * audioContext会有一定准备的时间
@@ -74,22 +74,22 @@ Page({
     this.setupAudioContextLister();
   },
 
-  // ============     网络请求    ============
-  getPageData(id) {
-    getSongDetail(id).then((res) => {
-      this.setData({
-        currentSong: res.songs[0],
-        durationTime: res.songs[0].dt
-      });
-    });
+  // // ============     网络请求    ============
+  // getPageData(id) {
+  //   getSongDetail(id).then((res) => {
+  //     this.setData({
+  //       currentSong: res.songs[0],
+  //       durationTime: res.songs[0].dt
+  //     });
+  //   });
 
-    getSongLyric(id).then((res) => {
-      // 拿到歌词
-      const lyricString = res.lrc.lyric;
-      const lyricInfos = parseLyric(lyricString);
-      this.setData({ lyricInfos });
-    });
-  },
+  //   getSongLyric(id).then((res) => {
+  //     // 拿到歌词
+  //     const lyricString = res.lrc.lyric;
+  //     const lyricInfos = parseLyric(lyricString);
+  //     this.setData({ lyricInfos });
+  //   });
+  // },
 
   // ============     audio事件监听     ============
   setupAudioContextLister() {
@@ -112,23 +112,23 @@ Page({
       }
 
       // 3、根据当前时间去查找播放的歌词
+      if (!this.data.lyricInfos.length) return;
       let i = 0;
       for (; i < this.data.lyricInfos.length; i++) {
         const lyricInfo = this.data.lyricInfos[i];
         if (currentTime < lyricInfo.time) {
           break;
         }
-
-        // 优化：当索引不一致时，才需要重新设置当前歌词
-        const currentIndex = i - 1;
-        if (this.data.currentLyricIndex !== currentIndex) {
-          const currentLyricInfo = this.data.lyricInfos[currentIndex];
-          this.setData({
-            currentLyricText: currentLyricInfo.text,
-            currentLyricIndex: currentIndex,
-            lyricScrollTop: currentIndex * 35
-          });
-        }
+      }
+      // 优化：当索引不一致时，才需要重新设置当前歌词
+      const currentIndex = i - 1;
+      if (this.data.currentLyricIndex !== currentIndex) {
+        const currentLyricInfo = this.data.lyricInfos[currentIndex];
+        this.setData({
+          currentLyricText: currentLyricInfo.text,
+          currentLyricIndex: currentIndex,
+          lyricScrollTop: currentIndex * 35
+        });
       }
     });
   },
@@ -160,6 +160,24 @@ Page({
     const value = event.detail.value;
     const currentTime = this.data.durationTime * (value / 100);
     this.setData({ isSliderChanging: true, currentTime, sliderValue: value });
+  },
+
+  // 返回
+  handleBackBtnClick() {
+    wx.navigateBack();
+  },
+
+  // 从store获取数据
+  setupPlayStoreListener() {
+    // 监听
+    playerStore.onStates(
+      ['currentSong', 'durationTime', 'lyricInfos'],
+      ({ currentSong, durationTime, lyricInfos }) => {
+        currentSong && this.setData({ currentSong });
+        durationTime && this.setData({ durationTime });
+        lyricInfos && this.setData({ lyricInfos });
+      }
+    );
   },
 
   /**
