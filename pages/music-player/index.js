@@ -71,7 +71,7 @@ Page({
      */
 
     // 5、audioContext的事件监听
-    this.setupAudioContextLister();
+    // this.setupAudioContextLister();
   },
 
   // // ============     网络请求    ============
@@ -91,47 +91,47 @@ Page({
   //   });
   // },
 
-  // ============     audio事件监听     ============
-  setupAudioContextLister() {
-    // audioContext.autoplay = true;
-    // audioContext.onCanplay(() => {
-    //   audioContext.play();
-    // });
+  // // ============     audio事件监听     ============
+  // setupAudioContextLister() {
+  //   // audioContext.autoplay = true;
+  //   // audioContext.onCanplay(() => {
+  //   //   audioContext.play();
+  //   // });
 
-    // 对时间更新时监听
-    audioContext.onTimeUpdate(() => {
-      // 1、获取当前时间 *1000为了得到毫秒
-      const currentTime = audioContext.currentTime * 1000;
+  //   // 对时间更新时监听
+  //   audioContext.onTimeUpdate(() => {
+  //     // 1、获取当前时间 *1000为了得到毫秒
+  //     const currentTime = audioContext.currentTime * 1000;
 
-      // 如果正在拖拽进度条，不改变当前时间
-      if (!this.data.isSliderChanging) {
-        // 2、根据当前时间修改currentTime、 改变进度条的值
-        const sliderValue = (currentTime / this.data.durationTime) * 100;
+  //     // 如果正在拖拽进度条，不改变当前时间
+  //     if (!this.data.isSliderChanging) {
+  //       // 2、根据当前时间修改currentTime、 改变进度条的值
+  //       const sliderValue = (currentTime / this.data.durationTime) * 100;
 
-        this.setData({ currentTime, sliderValue });
-      }
+  //       this.setData({ currentTime, sliderValue });
+  //     }
 
-      // 3、根据当前时间去查找播放的歌词
-      if (!this.data.lyricInfos.length) return;
-      let i = 0;
-      for (; i < this.data.lyricInfos.length; i++) {
-        const lyricInfo = this.data.lyricInfos[i];
-        if (currentTime < lyricInfo.time) {
-          break;
-        }
-      }
-      // 优化：当索引不一致时，才需要重新设置当前歌词
-      const currentIndex = i - 1;
-      if (this.data.currentLyricIndex !== currentIndex) {
-        const currentLyricInfo = this.data.lyricInfos[currentIndex];
-        this.setData({
-          currentLyricText: currentLyricInfo.text,
-          currentLyricIndex: currentIndex,
-          lyricScrollTop: currentIndex * 35
-        });
-      }
-    });
-  },
+  //     // 3、根据当前时间去查找播放的歌词
+  //     if (!this.data.lyricInfos.length) return;
+  //     let i = 0;
+  //     for (; i < this.data.lyricInfos.length; i++) {
+  //       const lyricInfo = this.data.lyricInfos[i];
+  //       if (currentTime < lyricInfo.time) {
+  //         break;
+  //       }
+  //     }
+  //     // 优化：当索引不一致时，才需要重新设置当前歌词
+  //     const currentIndex = i - 1;
+  //     if (this.data.currentLyricIndex !== currentIndex) {
+  //       const currentLyricInfo = this.data.lyricInfos[currentIndex];
+  //       this.setData({
+  //         currentLyricText: currentLyricInfo.text,
+  //         currentLyricIndex: currentIndex,
+  //         lyricScrollTop: currentIndex * 35
+  //       });
+  //     }
+  //   });
+  // },
 
   // ============   事件处理    ============
   handleSwiperChange(event) {
@@ -159,7 +159,7 @@ Page({
   handleSliderChanging(event) {
     const value = event.detail.value;
     const currentTime = this.data.durationTime * (value / 100);
-    this.setData({ isSliderChanging: true, currentTime, sliderValue: value });
+    this.setData({ isSliderChanging: true, currentTime });
   },
 
   // 返回
@@ -169,13 +169,32 @@ Page({
 
   // 从store获取数据
   setupPlayStoreListener() {
-    // 监听
+    // 1.监听currentSong/durationTime/lyricInfos
     playerStore.onStates(
       ['currentSong', 'durationTime', 'lyricInfos'],
       ({ currentSong, durationTime, lyricInfos }) => {
         currentSong && this.setData({ currentSong });
         durationTime && this.setData({ durationTime });
         lyricInfos && this.setData({ lyricInfos });
+      }
+    );
+
+    // 2.监听currentTime/currentLyricIndex/currentLyricText
+    playerStore.onStates(
+      ['currentTime', 'currentLyricIndex', 'currentLyricText'],
+      ({ currentTime, currentLyricIndex, currentLyricText }) => {
+        // 时间变化
+        if (currentTime && !this.data.isSliderChanging) {
+          const sliderValue = (currentTime / this.data.durationTime) * 100;
+          this.setData({ currentTime, sliderValue });
+        }
+        // 歌词变化
+        currentLyricIndex &&
+          this.setData({
+            currentLyricIndex,
+            lyricScrollTop: currentLyricIndex * 35
+          });
+        currentLyricText && this.setData({ currentLyricText });
       }
     );
   },
