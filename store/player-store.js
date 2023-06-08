@@ -14,7 +14,9 @@ const playerStore = new HYEventStore({
     currentLyricText: '', // 当前歌词
     currentLyricIndex: 0, // 当前歌词索引
     durationTime: 0, // 总时长
-    lyricInfos: [] // 歌词
+    lyricInfos: [], // 歌词
+
+    playModeIndex: 0 // 0 顺序，1 单曲循环，2 随机
   },
   actions: {
     playMusicWithSongIdAction(ctx, { id }) {

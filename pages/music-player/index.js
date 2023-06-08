@@ -4,6 +4,8 @@
 
 import { audioContext, playerStore } from '../../store/index';
 
+const playModeNames = ['order', 'repeat', 'random'];
+
 Page({
   /**
    * 页面的初始数据
@@ -22,7 +24,12 @@ Page({
     lyricInfos: [], // 歌词
     currentLyricText: '', // 当前歌词
     currentLyricIndex: 0, // 当前歌词索引
-    lyricScrollTop: 0 // 需要向上滚动的值
+    lyricScrollTop: 0, // 需要向上滚动的值
+
+    playModeIndex: 0,
+    playModeName: 'order',
+
+    playingName: 'pause'
   },
 
   /**
@@ -167,6 +174,15 @@ Page({
     wx.navigateBack();
   },
 
+  handleModeBtnClick() {
+    // 计算最新的playModeIndex
+    let playModeIndex = this.data.playModeIndex + 1;
+    if (playModeIndex === 3) playModeIndex = 0;
+
+    // 设置playerStore中的playModeIndex
+    playerStore.setState('playModeIndex', playModeIndex);
+  },
+
   // 从store获取数据
   setupPlayStoreListener() {
     // 1.监听currentSong/durationTime/lyricInfos
@@ -197,6 +213,14 @@ Page({
         currentLyricText && this.setData({ currentLyricText });
       }
     );
+
+    // 3、监听播放模式相关的数据
+    playerStore.onState('playModeIndex', (playModeIndex) => {
+      this.setData({
+        playModeIndex,
+        playModeName: playModeNames[playModeIndex]
+      });
+    });
   },
 
   /**
