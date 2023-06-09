@@ -8,6 +8,7 @@ const audioContext = wx.createInnerAudioContext();
 
 const playerStore = new HYEventStore({
   state: {
+    isFirstPlay: true, // 第一次播放
     id: 0,
     currentSong: {}, // 歌曲数据
     currentTime: 0, // 当前时长
@@ -65,7 +66,11 @@ const playerStore = new HYEventStore({
       audioContext.src = `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
 
       // 3、监听audioContext的一些事件
-      this.dispatch('setupAudioContextListerAction');
+      // 保证添加一次监听
+      if (ctx.isFirstPlay) {
+        this.dispatch('setupAudioContextListerAction');
+        ctx.isFirstPlay = false;
+      }
     },
 
     setupAudioContextListerAction(ctx) {
@@ -99,6 +104,12 @@ const playerStore = new HYEventStore({
           ctx.currentLyricText = currentLyricInfo.text;
           ctx.currentLyricIndex = currentIndex;
         }
+      });
+
+      // 3、监听歌曲播放完成
+      audioContext.onEnded(() => {
+        // 播放下一首
+        this.dispatch('changeNewMusicAction');
       });
     },
 
