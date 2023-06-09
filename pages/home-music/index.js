@@ -21,7 +21,11 @@ Page({
     hotSongMenu: [],
     recomendSongMenu: [],
 
-    rankings: { newRanking: {}, originRanking: {}, upRanking: {} }
+    rankings: { newRanking: {}, originRanking: {}, upRanking: {} },
+
+    currentSong: {},
+    isPlaying: false,
+    playAnimState: 'paused'
   },
 
   /**
@@ -97,6 +101,18 @@ Page({
     playerStore.setState('playListIndex', index);
   },
 
+  handlePlayBarClick: function () {
+    wx.navigateTo({
+      url: '/pages/music-player/index?id=' + this.data.currentSong.id
+    });
+  },
+
+  handlePlayBtnClick: function (event) {
+    playerStore.dispatch('changeMusicPlayStatusAction', !this.data.isPlaying);
+    // Propagation 繁殖
+    // event.stopPropagation()
+  },
+
   // 网络请求
   getPagedata() {
     getBanners().then((res) => {
@@ -132,15 +148,18 @@ Page({
     rankingStore.onState('upRanking', this.getRankingHandler('upRanking'));
 
     // 2.播放器监听
-    // playerStore.onStates(["currentSong", "isPlaying"], ({currentSong, isPlaying}) => {
-    //   if (currentSong) this.setData({ currentSong })
-    //   if (isPlaying !== undefined) {
-    //     this.setData({
-    //       isPlaying,
-    //       playAnimState: isPlaying ? "running": "paused"
-    //     })
-    //   }
-    // })
+    playerStore.onStates(
+      ['currentSong', 'isPlaying'],
+      ({ currentSong, isPlaying }) => {
+        if (currentSong) this.setData({ currentSong });
+        if (isPlaying !== undefined) {
+          this.setData({
+            isPlaying,
+            playAnimState: isPlaying ? 'running' : 'paused'
+          });
+        }
+      }
+    );
   },
 
   getRankingHandler(id) {
