@@ -16,12 +16,31 @@ const playerStore = new HYEventStore({
     durationTime: 0, // 总时长
     lyricInfos: [], // 歌词
 
-    playModeIndex: 0 // 0 顺序，1 单曲循环，2 随机
+    playModeIndex: 0, // 0 顺序，1 单曲循环，2 随机
+
+    isPlaying: false,
+
+    playListSongs: [], // 歌曲列表
+    playListIndex: 0 // 播放歌曲索引
   },
   actions: {
-    playMusicWithSongIdAction(ctx, { id }) {
+    playMusicWithSongIdAction(ctx, { id, isRefresh = false }) {
+      // ctx.id == id保证同一首歌不从头播放
+      // 切换歌曲要刷新
+      if (ctx.id == id && !isRefresh) return;
+
       // 保存id
       ctx.id = id;
+
+      // 0、修改播放状态
+      ctx.isPlaying = true;
+
+      ctx.currentSong = {};
+      ctx.durationTime = 0;
+      ctx.lyricInfos = [];
+      ctx.currentTime = 0;
+      ctx.currentLyricIndex = 0;
+      ctx.currentLyricText = '';
 
       // 1、请求歌曲数据
       // 请求歌曲详情
@@ -50,11 +69,11 @@ const playerStore = new HYEventStore({
     },
 
     setupAudioContextListerAction(ctx) {
-      // audioContext.autoplay = true;
-      // // 1、监听歌曲是否可以播放
-      // audioContext.onCanplay(() => {
-      //   audioContext.play();
-      // });
+      audioContext.autoplay = true;
+      // 1、监听歌曲是否可以播放
+      audioContext.onCanplay(() => {
+        audioContext.play();
+      });
 
       // 2、对时间更新时监听
       audioContext.onTimeUpdate(() => {
@@ -80,6 +99,45 @@ const playerStore = new HYEventStore({
           ctx.currentLyricText = currentLyricInfo.text;
           ctx.currentLyricIndex = currentIndex;
         }
+      });
+    },
+
+    changeMusicPlayStatusAction(ctx, isPlaying) {
+      ctx.isPlaying = isPlaying;
+      ctx.isPlaying ? audioContext.play() : audioContext.pause();
+    },
+
+    changeNewMusicAction(ctx, isNext = true) {
+      // 1.获取当前索引
+      let index = ctx.playListIndex;
+
+      // 2.根据不同的播放模式, 获取下一首歌的索引
+      switch (ctx.playModeIndex) {
+        case 0: // 顺序播放
+          index = isNext ? index + 1 : index - 1;
+          if (index === -1) index = ctx.playListSongs.length - 1;
+          if (index === ctx.playListSongs.length) index = 0;
+          break;
+        case 1: // 单曲循环
+          break;
+        case 2: // 随机播放
+          index = Math.floor(Math.random() * ctx.playListSongs.length);
+          break;
+      }
+
+      // 3.获取歌曲
+      let currentSong = ctx.playListSongs[index];
+      if (currentSong) {
+        // 记录最新的索引
+        ctx.playListIndex = index;
+      } else {
+        currentSong = ctx.currentSong;
+      }
+
+      // 4.播放新的歌曲
+      this.dispatch('playMusicWithSongIdAction', {
+        id: currentSong.id,
+        isRefresh: true
       });
     }
   }

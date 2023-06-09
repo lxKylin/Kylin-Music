@@ -30,6 +30,8 @@ Component({
 
       // 2、对歌曲的数据请求和其他操作
       playerStore.dispatch('playMusicWithSongIdAction', { id });
+
+      // 3、获取播放列表/当前歌曲索引
     }
   }
 });

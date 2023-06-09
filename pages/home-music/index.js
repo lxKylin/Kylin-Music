@@ -1,12 +1,12 @@
 // pages/home-music/index.js
-import { rankingStore } from "../../store/index";
+import { rankingStore, playerStore } from '../../store/index';
 
-import { getBanners, getSongMenu } from "../../service/api_music";
-import queryRect from "../../utils/query-rect";
-import throttle from "../../utils/throttle";
+import { getBanners, getSongMenu } from '../../service/api_music';
+import queryRect from '../../utils/query-rect';
+import throttle from '../../utils/throttle';
 
-// 对 queryRect函数 进行节流
-const throttleQueryRect = throttle(queryRect, 1000);
+// 对 queryRect函数 进行节流，trailing: true表示最后也执行一次
+const throttleQueryRect = throttle(queryRect, 1000, { trailing: true });
 
 Page({
   /**
@@ -21,7 +21,7 @@ Page({
     hotSongMenu: [],
     recomendSongMenu: [],
 
-    rankings: { newRanking: {}, originRanking: {}, upRanking: {} },
+    rankings: { newRanking: {}, originRanking: {}, upRanking: {} }
   },
 
   /**
@@ -32,7 +32,7 @@ Page({
     this.getPagedata();
 
     // 发起共享数据
-    rankingStore.dispatch("getRankingdataAction");
+    rankingStore.dispatch('getRankingdataAction');
 
     // 从store中获取共享的数据
     // rankingStore.onState("hotRanking", (res) => {
@@ -46,11 +46,11 @@ Page({
   // 事件处理
   handleSearchClick() {
     wx.navigateTo({
-      url: "/pages/detail-search/index",
+      url: '/pages/detail-search/index'
     });
   },
   handleMoreClick() {
-    this.navigateToDetailSongsPage("hotRanking");
+    this.navigateToDetailSongsPage('hotRanking');
   },
   handleRankingItemClick(event) {
     const rankingName = event.currentTarget.dataset.ranking;
@@ -59,7 +59,7 @@ Page({
 
   navigateToDetailSongsPage(rankingName) {
     wx.navigateTo({
-      url: `/pages/detail-songs/index?rankingName=${rankingName}&type=ranking`,
+      url: `/pages/detail-songs/index?rankingName=${rankingName}&type=ranking`
     });
   },
 
@@ -82,10 +82,19 @@ Page({
     // });
 
     // 节流优化
-    throttleQueryRect(".swiper-image").then((res) => {
+    throttleQueryRect('.swiper-image').then((res) => {
       const rect = res[0];
       this.setData({ swiperHeight: rect.height });
     });
+  },
+
+  handleSongItemClick(event) {
+    // 拿到当前播放歌曲在播放列表的索引
+    const index = event.currentTarget.dataset.index;
+
+    // 拿到当前播放列表和播放歌曲索引
+    playerStore.setState('playListSongs', this.data.recommendSongs);
+    playerStore.setState('playListIndex', index);
   },
 
   // 网络请求
@@ -98,7 +107,7 @@ Page({
       this.setData({ hotSongMenu: res.playlists });
     });
 
-    getSongMenu("华语").then((res) => {
+    getSongMenu('华语').then((res) => {
       this.setData({ recommendSongMenu: res.playlists });
     });
   },
@@ -110,17 +119,17 @@ Page({
 
   setupPlayerStoreListener() {
     // 1.排行榜监听
-    rankingStore.onState("hotRanking", (res) => {
+    rankingStore.onState('hotRanking', (res) => {
       if (!res.tracks) return;
       const recommendSongs = res.tracks.slice(0, 6);
       this.setData({ recommendSongs });
     });
-    rankingStore.onState("newRanking", this.getRankingHandler("newRanking"));
+    rankingStore.onState('newRanking', this.getRankingHandler('newRanking'));
     rankingStore.onState(
-      "originRanking",
-      this.getRankingHandler("originRanking")
+      'originRanking',
+      this.getRankingHandler('originRanking')
     );
-    rankingStore.onState("upRanking", this.getRankingHandler("upRanking"));
+    rankingStore.onState('upRanking', this.getRankingHandler('upRanking'));
 
     // 2.播放器监听
     // playerStore.onStates(["currentSong", "isPlaying"], ({currentSong, isPlaying}) => {
@@ -145,8 +154,8 @@ Page({
       const rankingObj = { name, coverImgUrl, playCount, songList };
       const newRankings = { ...this.data.rankings, [id]: rankingObj };
       this.setData({
-        rankings: newRankings,
+        rankings: newRankings
       });
     };
-  },
+  }
 });
