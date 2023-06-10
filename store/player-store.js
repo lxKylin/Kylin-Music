@@ -4,7 +4,8 @@ import { getSongDetail, getSongLyric } from '../service/api_player';
 
 import { parseLyric } from '../utils/parse-lyric';
 
-const audioContext = wx.createInnerAudioContext();
+// const audioContext = wx.createInnerAudioContext(); // 前台播放
+const audioContext = wx.getBackgroundAudioManager(); // 后台播放
 
 const playerStore = new HYEventStore({
   state: {
@@ -46,7 +47,10 @@ const playerStore = new HYEventStore({
       // 1、请求歌曲数据
       // 请求歌曲详情
       getSongDetail(id).then((res) => {
-        (ctx.currentSong = res.songs[0]), (ctx.durationTime = res.songs[0].dt);
+        ctx.currentSong = res.songs[0];
+        ctx.durationTime = res.songs[0].dt;
+
+        audioContext.title = res.songs[0].name;
       });
       // 请求歌曲歌词
       getSongLyric(id).then((res) => {
@@ -64,6 +68,9 @@ const playerStore = new HYEventStore({
        * 3、播放
        */
       audioContext.src = `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
+
+      // 后台播放必须要配置title
+      audioContext.title = id;
 
       // 3、监听audioContext的一些事件
       // 保证添加一次监听

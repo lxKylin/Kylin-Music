@@ -25,7 +25,7 @@ Page({
 
     currentSong: {},
     isPlaying: false,
-    playAnimState: 'paused'
+    playAnimState: 'paused' // state：动画是否暂停
   },
 
   /**
@@ -101,15 +101,15 @@ Page({
     playerStore.setState('playListIndex', index);
   },
 
-  handlePlayBarClick: function () {
+  handlePlayBarClick() {
     wx.navigateTo({
       url: '/pages/music-player/index?id=' + this.data.currentSong.id
     });
   },
 
-  handlePlayBtnClick: function (event) {
+  handlePlayBtnClick(event) {
     playerStore.dispatch('changeMusicPlayStatusAction', !this.data.isPlaying);
-    // Propagation 繁殖
+    // Propagation 繁殖，冒泡，小程序不支持
     // event.stopPropagation()
   },
 
