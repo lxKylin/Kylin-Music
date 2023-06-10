@@ -156,7 +156,7 @@ Page({
     const currentTime = this.data.durationTime * (value / 100);
 
     // 3、seek设置context播放currentTime位置的音乐
-    audioContext.pause(); // 暂停音乐，因为有跳动播放
+    // audioContext.pause(); // 暂停音乐，因为有跳动播放
     // 传入的值单位为s
     audioContext.seek(currentTime / 1000);
 
