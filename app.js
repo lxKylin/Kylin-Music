@@ -1,5 +1,13 @@
 // app.js
 
+import {
+  getLoginCode,
+  codeToToken,
+  checkToken,
+  checkSession
+} from './service/api_login';
+import { TOKEN_KEY } from './constants/token-constant';
+
 // 注册小程序实例
 App({
   globalData: {
@@ -10,8 +18,8 @@ App({
     deviceRadio: 0 // 高宽比
   },
   // 应用程序启动时
-  onLaunch() {
-    // 获取设备信息
+  async onLaunch() {
+    // 1、获取设备信息
     const info = wx.getSystemInfoSync();
     // info中有screenWidth
     this.globalData.screenWidth = info.screenWidth;
@@ -22,5 +30,35 @@ App({
 
     const deviceRadio = info.screenHeight / info.screenWidth;
     this.globalData.deviceRadio = deviceRadio;
+
+    // 2、让用户默认进行登陆
+    this.handleLogin();
+  },
+
+  async handleLogin() {
+    const token = wx.getStorageSync(TOKEN_KEY);
+
+    // 检查session_key有无过期
+    const isSessionExpire = await checkSession();
+
+    // token有无过期
+    const checkResult = await checkToken();
+    console.log(checkResult);
+
+    if (!token || checkResult.errorCode || !isSessionExpire) {
+      this.loginAction();
+    }
+  },
+
+  async loginAction() {
+    // 1、获取code
+    const code = await getLoginCode();
+
+    // 2、将code发送给服务器
+    const result = await codeToToken(code);
+    console.log(result);
+    const token = result.token;
+
+    wx.setStorageSync(TOKEN_KEY, token);
   }
 });
