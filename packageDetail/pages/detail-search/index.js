@@ -2,10 +2,10 @@
 import {
   getSearchHot,
   getSearchSuggest,
-  getSearchResult,
-} from "../../service/api_search";
-import debounce from "../../utils/debounce";
-import stringToNodes from "../../utils/string2nodes";
+  getSearchResult
+} from '../../../service/api_search';
+import debounce from '../../../utils/debounce';
+import stringToNodes from '../../../utils/string2nodes';
 
 // 处理防抖
 const debounceGetSearchSuggest = debounce(getSearchSuggest, 300);
@@ -19,7 +19,7 @@ Page({
     suggestSongs: [],
     suggestSongsNodes: [],
     resultSongs: [],
-    searchValue: "",
+    searchValue: ''
   },
 
   /**
@@ -95,5 +95,5 @@ Page({
 
     // 3.发送网络请求
     this.handleSearchAction();
-  },
+  }
 });

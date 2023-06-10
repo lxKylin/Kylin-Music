@@ -1,5 +1,5 @@
 // pages/home-video/index.js
-import { getTopMV } from "../../service/api_video";
+import { getTopMV } from '../../service/api_video';
 
 Page({
   /**
@@ -8,7 +8,7 @@ Page({
   data: {
     topMVs: [],
     // 是否还有更多的数据
-    hasMore: true,
+    hasMore: true
   },
 
   /**
@@ -80,7 +80,7 @@ Page({
 
     // 页面跳转
     wx.navigateTo({
-      url: `/pages/detail-video/index?id=${id}`,
+      url: `/packageDetail/pages/detail-video/index?id=${id}`
     });
   },
 
@@ -140,5 +140,5 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage() {},
+  onShareAppMessage() {}
 });

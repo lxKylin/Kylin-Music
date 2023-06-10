@@ -2,8 +2,8 @@
 import {
   getMVURL,
   getMVDetail,
-  getRelatedVideo,
-} from "../../service/api_video";
+  getRelatedVideo
+} from '../../../service/api_video';
 
 Page({
   /**
@@ -12,7 +12,7 @@ Page({
   data: {
     mvURLInfo: {},
     mvDetail: {},
-    relatedVideo: [],
+    relatedVideo: []
   },
 
   /**
@@ -79,5 +79,5 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage() {},
+  onShareAppMessage() {}
 });

@@ -50,7 +50,7 @@ Page({
   // 事件处理
   handleSearchClick() {
     wx.navigateTo({
-      url: '/pages/detail-search/index'
+      url: '/packageDetail/pages/detail-search/index'
     });
   },
   handleMoreClick() {
@@ -63,7 +63,7 @@ Page({
 
   navigateToDetailSongsPage(rankingName) {
     wx.navigateTo({
-      url: `/pages/detail-songs/index?rankingName=${rankingName}&type=ranking`
+      url: `/packageDetail/pages/detail-songs/index?rankingName=${rankingName}&type=ranking`
     });
   },
 
@@ -103,7 +103,8 @@ Page({
 
   handlePlayBarClick() {
     wx.navigateTo({
-      url: '/pages/music-player/index?id=' + this.data.currentSong.id
+      url:
+        '/packagePlayer/pages/music-player/index?id=' + this.data.currentSong.id
     });
   },
 

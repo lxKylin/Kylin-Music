@@ -2,7 +2,7 @@
 // import { getSongDetail, getSongLyric } from '../../service/api_player';
 // import { parseLyric } from '../../utils/parse-lyric';
 
-import { audioContext, playerStore } from '../../store/index';
+import { audioContext, playerStore } from '../../../store/index';
 
 const playModeNames = ['order', 'repeat', 'random'];
 
