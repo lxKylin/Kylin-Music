@@ -42,9 +42,16 @@
           "query": "id=1338695683",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "profile",
+          "pathName": "pages/home-profile/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
   },
-  "libVersion": "2.31.0"
+  "libVersion": "2.32.1"
 }

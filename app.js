@@ -56,7 +56,6 @@ App({
 
     // 2、将code发送给服务器
     const result = await codeToToken(code);
-    console.log(result);
     const token = result.token;
 
     wx.setStorageSync(TOKEN_KEY, token);
